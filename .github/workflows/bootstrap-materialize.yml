@@ -38,6 +38,20 @@ jobs:
           test -f "$src/pyproject.toml"
           rsync -a --delete --exclude='.git/' --exclude='.bootstrap/' --exclude='.github/workflows/bootstrap-materialize.yml' "$src/" ./
           rm -rf .bootstrap
+      - name: Apply portable spec-ledger paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('tests/test_spec_coverage_ledger.py')
+          s = p.read_text(encoding='utf-8')
+          old = "SPEC = Path('/mnt/data/NOLANE-MEMORY-V0.6.3-FINAL-USE-TIME-CAUSAL-CUT-SEMANTIC-OCC-RUNTIME-RESEARCH-SPEC.md')\nROOT = Path('/mnt/data/nolane-memory-v0.6.3-runtime')"
+          new = "ROOT = Path(__file__).resolve().parents[1]\nSPEC = ROOT / 'docs' / 'NOLANE-MEMORY-V0.6.3-SPEC.md'"
+          if old not in s:
+              raise SystemExit('expected non-portable ledger path block not found')
+          p.write_text(s.replace(old, new), encoding='utf-8')
+          PY
       - name: Install test runner
         shell: bash
         run: |
