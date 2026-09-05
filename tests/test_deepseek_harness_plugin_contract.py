@@ -18,6 +18,18 @@ class DeepSeekHarnessPluginContractTests(unittest.TestCase):
         self.assertEqual(package["peerDependencies"]["@deepseek-ai/dsh-tools"], "0.1.3-alpha.1")
         self.assertEqual(package["peerDependencies"]["@deepseek-ai/schemastery"], "3.18.2")
 
+    def test_package_has_explicit_deepseek_workspace_typecheck_contract(self):
+        package = json.loads((PLUGIN / "package.json").read_text())
+        self.assertEqual(
+            package["scripts"]["typecheck:dsh-workspace"],
+            "tsc -p tsconfig.dsh-workspace.json --noEmit",
+        )
+        config = json.loads((PLUGIN / "tsconfig.dsh-workspace.json").read_text())
+        self.assertEqual(config["extends"], "../../../tsconfig.base.json")
+        self.assertTrue(config["compilerOptions"]["noEmit"])
+        self.assertFalse(config["compilerOptions"]["composite"])
+        self.assertEqual(config["include"], ["src/**/*.ts"])
+
     def test_plugin_uses_documented_cordis_shape_and_registers_expected_tools(self):
         text = (PLUGIN / "src" / "index.ts").read_text()
         self.assertRegex(text, r"export const name\s*=\s*['\"]nolane-memory['\"]")
