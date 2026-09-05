@@ -89,9 +89,10 @@ async function callBridge(config: ResolvedConfig, method: string, params: Record
     child.on('close', code => finish(() => {
       if (code !== 0) return reject(new Error(`nolane-memory bridge exited ${code}: ${stderr.trim()}`))
       const lines = stdout.split(/\r?\n/).filter(Boolean)
-      if (lines.length !== 1) return reject(new Error(`nolane-memory bridge protocol violation: expected one line, got ${lines.length}`))
+      const line = lines[0]
+      if (lines.length !== 1 || line === undefined) return reject(new Error(`nolane-memory bridge protocol violation: expected one line, got ${lines.length}`))
       let response: RpcResponse
-      try { response = JSON.parse(lines[0]) as RpcResponse }
+      try { response = JSON.parse(line) as RpcResponse }
       catch { return reject(new Error(`nolane-memory bridge returned invalid JSON: ${stdout.slice(0, 500)}`)) }
       if (response.id !== id) return reject(new Error('nolane-memory bridge response id mismatch'))
       if (!response.ok) return reject(new Error(`${response.error.type}: ${response.error.message}`))
@@ -103,7 +104,7 @@ async function callBridge(config: ResolvedConfig, method: string, params: Record
 
 function jsonOutput() {
   return {
-    schema: { type: 'string' },
+    schema: { type: 'string' as const },
     render: (_args: unknown, value: string) => [{ type: 'text' as const, text: value }],
   }
 }
@@ -130,10 +131,10 @@ export function apply(ctx: Context, config: Config): void {
     parameters: {
       source_event_identity: { type: 'string', required: true, description: 'Stable semantic event identity; retries must reuse it.' },
       content_json: { type: 'string', required: true, description: 'JSON value to preserve as evidence.' },
-      transport_channel: { type: 'string', required: false, description: 'Transport/channel label; defaults to deepseek-harness.' },
-      external_identity: { type: 'string', required: false, description: 'External source identity when known.' },
-      source_authority_class: { type: 'string', required: false, description: 'Explicit authority class; defaults to UNSPECIFIED.' },
-      common_mode_group: { type: 'string', required: false, description: 'Common-mode failure group when known.' },
+      transport_channel: { type: 'string', description: 'Transport/channel label; defaults to deepseek-harness.' },
+      external_identity: { type: 'string', description: 'External source identity when known.' },
+      source_authority_class: { type: 'string', description: 'Explicit authority class; defaults to UNSPECIFIED.' },
+      common_mode_group: { type: 'string', description: 'Common-mode failure group when known.' },
     },
     output: jsonOutput(),
     async execute(args) {
@@ -156,10 +157,10 @@ export function apply(ctx: Context, config: Config): void {
     description: 'Compile an explicit Nolane Recall Frame from predeclared query-family and representation contracts.',
     parameters: {
       roles_json: { type: 'string', required: true, description: 'JSON array of RecallRole objects.' },
-      token_budget: { type: 'number', required: false, description: 'Frame token budget.' },
-      page_fault_budget: { type: 'number', required: false, description: 'Semantic page-fault budget.' },
-      compatibility_profile_json: { type: 'string', required: false, description: 'Optional JSON object of applicability dimensions.' },
-      safety_critical_dimensions_json: { type: 'string', required: false, description: 'Optional JSON array of safety-critical dimensions.' },
+      token_budget: { type: 'number', description: 'Frame token budget.' },
+      page_fault_budget: { type: 'number', description: 'Semantic page-fault budget.' },
+      compatibility_profile_json: { type: 'string', description: 'Optional JSON object of applicability dimensions.' },
+      safety_critical_dimensions_json: { type: 'string', description: 'Optional JSON array of safety-critical dimensions.' },
     },
     output: jsonOutput(),
     async execute(args) {
@@ -197,8 +198,8 @@ export function apply(ctx: Context, config: Config): void {
       name: 'nolane_memory_release_gate',
       description: 'Run the expensive Nolane Memory implementation release gate for diagnostics. Host must explicitly enable this tool.',
       parameters: {
-        fuzz_cases: { type: 'number', required: false, description: 'Bounded state-model fuzz cases.' },
-        differential_cases: { type: 'number', required: false, description: 'Independent-kernel differential cases.' },
+        fuzz_cases: { type: 'number', description: 'Bounded state-model fuzz cases.' },
+        differential_cases: { type: 'number', description: 'Independent-kernel differential cases.' },
       },
       output: jsonOutput(),
       async execute(args) {
