@@ -68,7 +68,7 @@ jobs:
           pnpm install --filter @nolane-memory/deepseek-harness-plugin... --no-frozen-lockfile --ignore-scripts
       - name: Typecheck Nolane plugin inside DeepSeek workspace
         working-directory: deepseek-harness
-        run: pnpm --filter @nolane-memory/deepseek-harness-plugin run typecheck
+        run: pnpm --filter @nolane-memory/deepseek-harness-plugin run typecheck:dsh-workspace
 
   release-contract:
     runs-on: ubuntu-latest
