@@ -8,7 +8,8 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "typecheck:offline": "tsc -p tsconfig.offline.json --noEmit"
+    "typecheck:offline": "tsc -p tsconfig.offline.json --noEmit",
+    "typecheck:dsh-workspace": "tsc -p tsconfig.dsh-workspace.json --noEmit"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "4.0.2",
