@@ -38,6 +38,11 @@ jobs:
           test -f "$src/pyproject.toml"
           rsync -a --delete --exclude='.git/' --exclude='.bootstrap/' --exclude='.github/workflows/bootstrap-materialize.yml' "$src/" ./
           rm -rf .bootstrap
+      - name: Install test runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -q pytest
       - name: Verify materialized source
         shell: bash
         run: |
