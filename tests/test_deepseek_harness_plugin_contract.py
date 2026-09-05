@@ -22,13 +22,17 @@ class DeepSeekHarnessPluginContractTests(unittest.TestCase):
         package = json.loads((PLUGIN / "package.json").read_text())
         self.assertEqual(
             package["scripts"]["typecheck:dsh-workspace"],
-            "tsc -p tsconfig.dsh-workspace.json --noEmit",
+            "tsc -b tsconfig.dsh-workspace.json --pretty false",
         )
         config = json.loads((PLUGIN / "tsconfig.dsh-workspace.json").read_text())
         self.assertEqual(config["extends"], "../../../tsconfig.base.json")
-        self.assertTrue(config["compilerOptions"]["noEmit"])
-        self.assertFalse(config["compilerOptions"]["composite"])
-        self.assertEqual(config["include"], ["src/**/*.ts"])
+        self.assertEqual(config["compilerOptions"]["rootDir"], "src")
+        self.assertEqual(config["compilerOptions"]["outDir"], "lib/types")
+        self.assertEqual(config["include"], ["src"])
+        self.assertEqual(
+            [ref["path"] for ref in config["references"]],
+            ["../../../vendor/cordis", "../../../vendor/schemastery", "../../core/tools"],
+        )
 
     def test_plugin_uses_documented_cordis_shape_and_registers_expected_tools(self):
         text = (PLUGIN / "src" / "index.ts").read_text()
@@ -49,7 +53,6 @@ class DeepSeekHarnessPluginContractTests(unittest.TestCase):
         self.assertIn("spawn(", text)
         self.assertIn("shell: false", text)
         self.assertNotIn("exec(", text)
-        # These are host config fields and must not appear in model-facing parameter declarations.
         parameter_blocks = re.findall(r"parameters:\s*\{(.*?)\n\s*\},\n\s*output:", text, flags=re.S)
         self.assertTrue(parameter_blocks)
         joined = "\n".join(parameter_blocks)
