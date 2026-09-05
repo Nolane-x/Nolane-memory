@@ -1,0 +1,57 @@
+name: Materialize verified rc3 source
+
+on:
+  push:
+    branches:
+      - release/0.6.3rc3-deepseek-plugin
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: ${{ hashFiles('.bootstrap/READY') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reconstruct verified source snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/rc3-bootstrap9.tar.xz"
+          : > "$archive"
+          for i in 000 001 002 003 004; do
+            base64 -d ".bootstrap/text/part-${i}.b64" >> "$archive"
+          done
+          for i in $(seq -w 5 15); do
+            cat ".bootstrap/raw/part-0${i}.bin" >> "$archive"
+          done
+          for f in .bootstrap/tail/frag-*.b64; do
+            base64 -d "$f" >> "$archive"
+          done
+          echo "1e6c1f6f1f4623e2e2cd9194382a9b61925f1b76817392667088ce14e8fc465f  $archive" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/extract"
+          tar -xJf "$archive" -C "$RUNNER_TEMP/extract"
+          src="$RUNNER_TEMP/extract/nolane-memory-v0.6.3-runtime"
+          test -f "$src/pyproject.toml"
+          rsync -a --delete --exclude='.git/' --exclude='.bootstrap/' --exclude='.github/workflows/bootstrap-materialize.yml' "$src/" ./
+          rm -rf .bootstrap
+      - name: Verify materialized source
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python -m pytest -q
+          PYTHONPATH=src python -m unittest discover -s tests -q
+          python -m compileall -q src tests examples
+      - name: Commit materialized source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "release: materialize verified Nolane Memory 0.6.3rc3 source"
+          git push origin HEAD
