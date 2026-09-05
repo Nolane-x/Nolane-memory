@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   materialize:
-    if: ${{ hashFiles('.bootstrap/READY') != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +19,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test -f .bootstrap/READY
           archive="$RUNNER_TEMP/rc3-bootstrap9.tar.xz"
           : > "$archive"
           for i in 000 001 002 003 004; do
