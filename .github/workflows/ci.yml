@@ -32,19 +32,43 @@ jobs:
   deepseek-harness-plugin:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Nolane Memory
+        uses: actions/checkout@v4
+        with:
+          path: nolane-memory
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: python -m pip install -e . pytest
-      - run: python -m pytest -q tests/test_deepseek_harness_bridge.py tests/test_deepseek_harness_plugin_contract.py
+      - working-directory: nolane-memory
+        run: python -m pip install -e . pytest
+      - working-directory: nolane-memory
+        run: python -m pytest -q tests/test_deepseek_harness_bridge.py tests/test_deepseek_harness_plugin_contract.py
       - uses: actions/setup-node@v4
         with:
           node-version: '22.20.0'
-      - working-directory: plugins/deepseek-harness
-        run: npm install --ignore-scripts --no-audit --no-fund
-      - working-directory: plugins/deepseek-harness
-        run: npm run typecheck
+      - name: Checkout current DeepSeek Harness master
+        uses: actions/checkout@v4
+        with:
+          repository: deepseek-ai/deepseek-harness
+          ref: master
+          path: deepseek-harness
+      - name: Inject Nolane plugin into DeepSeek workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p deepseek-harness/packages/nolane/memory
+          cp -a nolane-memory/plugins/deepseek-harness/. deepseek-harness/packages/nolane/memory/
+      - name: Install DeepSeek workspace dependencies
+        working-directory: deepseek-harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@11.7.0 --activate
+          pnpm install --filter @nolane-memory/deepseek-harness-plugin... --no-frozen-lockfile --ignore-scripts
+      - name: Typecheck Nolane plugin inside DeepSeek workspace
+        working-directory: deepseek-harness
+        run: pnpm --filter @nolane-memory/deepseek-harness-plugin run typecheck
 
   release-contract:
     runs-on: ubuntu-latest
