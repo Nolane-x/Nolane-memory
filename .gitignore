@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+*.db
+*.db-wal
+*.db-shm
+node_modules/
+plugins/deepseek-harness/lib/
+.DS_Store

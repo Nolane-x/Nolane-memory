@@ -1,0 +1,55 @@
+Nolane Memory 0.6.3rc3 verification
+Generated: 2026-09-05T09:18:50.950128Z
+
+Fresh source verification
+- pytest: 250 passed, 0 failed (33.66s)
+- unittest discover: 250 passed, 0 failed (33.023s)
+- compileall src/tests/examples/plugin-python: PASS
+- examples/basic_runtime.py: PASS
+- examples/full_profile.py: PASS
+- CLI init/ownership: PASS; ownership 48/48
+- DeepSeek Harness bridge/contract tests: 10 passed, 0 failed
+- DeepSeek Harness offline strict TypeScript contract: PASS
+- DeepSeek published-package typecheck: delegated to GitHub CI after publication (not self-certified locally)
+
+Spec traceability
+- numbered sections: 402/402 contiguous
+- implementation-testable: 302
+- implementation COMPLETE: 302
+- implementation MISSING: 0
+- implementation PARTIAL: 0
+- research-external: 47
+- reference/narrative: 53
+
+Final implementation release gate
+- checks: 27/27 PASS
+- state-model lifelong fuzz: 100000 cases, 0 failures
+- persistence SQLite fuzz: 1200 operations, 0 failures
+- independent-kernel differential: 1097 comparisons, 0 failures
+- Part XIII formal suite: 16 families, 0 failures
+- v0.6.1 Seam Calculus: 36 families / 80553 cases / 0 failures
+- v0.6.2 Continuity-Recovery-Erasure Calculus: 24 families / 135880 cases / 0 failures
+- v0.6.3 Use-Time/Causal-Cut Calculus: 34 families / 131701 cases / 0 failures
+- implementation_ready: true
+- research_complete: false
+- research_closure: BLOCKED
+
+Diversified deterministic audit
+- seeds: 1, 17, 603, 20260905, 2147483647
+- each seed: 100000 lifelong cases + 1097 differential comparisons
+- failures across all listed seeds: 0
+- static-danger scan (eval/exec/pickle/shell=True/os.system): 0 hits
+- SQLite integrity_check: ok; foreign_key_check: 0 rows; journal_mode=wal; synchronous=FULL(2)
+- embedded spec sha256: e9cd12daa79dc3252d17484587887b3c19db3a5a5dd747b69b79f60058c283df
+
+Packaging
+- wheel: nolane_memory-0.6.3rc3-py3-none-any.whl
+- wheel sha256: 94c0a17b09ba5eb4a5a0bbc2639c4ddb15938eb68072d0f3ac6e62517bd9b801
+- wheel bytes: 149781
+- wheel clean-install smoke: PASS
+- wheel zip integrity: PASS
+- source-tree digest (declared exclusions): e38b904b77e9ee6b248db9995dd55e00d7e03b8c7d4cb18ff2d9f94bed5fb937
+- hashed source files: 103
+
+Boundary
+research_complete remains false because the specification reserves external empirical/replication obligations for external evidence. DeepSeek Harness compatibility against the real published developer-preview packages is verified by repository CI after publication, not by this local offline artifact.

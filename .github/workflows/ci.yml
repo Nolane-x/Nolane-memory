@@ -1,0 +1,92 @@
+name: verify
+
+on:
+  push:
+    branches: [main, 'release/**', 'feat/**']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python-core:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e . pytest
+      - run: python -m pip check
+      - run: python -m pytest -q
+      - run: python -m unittest discover -s tests -q
+      - run: python -m compileall -q src tests examples plugins/deepseek-harness/python
+      - run: python examples/basic_runtime.py
+      - run: python examples/full_profile.py
+
+  deepseek-harness-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Nolane Memory
+        uses: actions/checkout@v4
+        with:
+          path: nolane-memory
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - working-directory: nolane-memory
+        run: python -m pip install -e . pytest
+      - working-directory: nolane-memory
+        run: python -m pytest -q tests/test_deepseek_harness_bridge.py tests/test_deepseek_harness_plugin_contract.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0'
+      - name: Checkout current DeepSeek Harness master
+        uses: actions/checkout@v4
+        with:
+          repository: deepseek-ai/deepseek-harness
+          ref: master
+          path: deepseek-harness
+      - name: Inject Nolane plugin into DeepSeek workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p deepseek-harness/packages/nolane/memory
+          cp -a nolane-memory/plugins/deepseek-harness/. deepseek-harness/packages/nolane/memory/
+      - name: Install DeepSeek workspace dependencies
+        working-directory: deepseek-harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@11.7.0 --activate
+          pnpm install --filter @nolane-memory/deepseek-harness-plugin... --no-frozen-lockfile --ignore-scripts
+      - name: Typecheck Nolane plugin inside DeepSeek workspace
+        working-directory: deepseek-harness
+        run: pnpm --filter @nolane-memory/deepseek-harness-plugin run typecheck:dsh-workspace
+
+  release-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e . pytest
+      - run: python -m pytest -q tests/test_spec_coverage_ledger.py tests/test_full_spec_release_gate.py tests/test_versioned_seam_calculi.py tests/test_use_time_causal_cut_calculus.py
+      - run: |
+          python - <<'PY'
+          import tempfile
+          from nolane_memory import MemoryRuntime
+          with tempfile.NamedTemporaryFile(suffix='.db') as f:
+              rt = MemoryRuntime(f.name, clock_authority_id='ci-clock', clock_epoch='ci-1')
+              rt.create_domain('ci')
+              report = rt.run_full_spec_release_gate('ci', seed=603, fuzz_cases=100000, differential_cases=1024, persistence_fuzz_cases=1200)
+              assert report.implementation_ready, report.checks
+              rt.close()
+          PY
