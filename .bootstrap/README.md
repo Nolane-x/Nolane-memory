@@ -1,1 +1,0 @@
-This directory is a temporary transport envelope for the exact verified 0.6.3rc3 source snapshot. GitHub Actions reconstructs the archive, verifies SHA-256, materializes the source tree, and removes this bootstrap directory in the resulting release commit.

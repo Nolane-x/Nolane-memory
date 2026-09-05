@@ -1,0 +1,151 @@
+{
+  "external_boundary": "Internal executable evidence does not establish external benchmark superiority, production distributed consensus, natural-language extraction completeness, provider erasure, or independent external replication.",
+  "generated_at_utc": "2026-09-05T09:18:50.950128Z",
+  "implementation_status": "FULL_IMPLEMENTATION_TRACEABILITY_GREEN",
+  "kind": "nolane-memory-v0.6.3-release-manifest",
+  "release": "0.6.3rc3",
+  "research_closure": "BLOCKED",
+  "research_complete": false,
+  "source_tree": {
+    "exclusions": [
+      "dist/",
+      ".pytest_cache/",
+      "build/",
+      "__pycache__",
+      "*.pyc",
+      "*.egg-info",
+      "docs/RELEASE_MANIFEST.json",
+      "docs/VERIFICATION.txt"
+    ],
+    "hashed_file_count": 103,
+    "sha256": "e38b904b77e9ee6b248db9995dd55e00d7e03b8c7d4cb18ff2d9f94bed5fb937"
+  },
+  "spec": {
+    "implementation_complete": 302,
+    "implementation_missing": 0,
+    "implementation_partial": 0,
+    "implementation_testable": 302,
+    "numbered_sections": 402,
+    "path": "docs/NOLANE-MEMORY-V0.6.3-SPEC.md",
+    "reference_narrative": 53,
+    "research_external": 47,
+    "sha256": "e9cd12daa79dc3252d17484587887b3c19db3a5a5dd747b69b79f60058c283df"
+  },
+  "unsupported_claims": [
+    "universal_future_query_safety",
+    "empirical_superiority",
+    "independent_replication"
+  ],
+  "verification": {
+    "basic_example": "PASS",
+    "clean_wheel_install": "PASS",
+    "cli_smoke": "PASS",
+    "compileall": "PASS",
+    "deepseek_harness_plugin": {
+      "pinned_versions": {
+        "@deepseek-ai/cordis": "4.0.2",
+        "@deepseek-ai/dsh-tools": "0.1.3-alpha.1",
+        "@deepseek-ai/schemastery": "3.18.2"
+      },
+      "python_contract_tests": {
+        "failed": 0,
+        "passed": 10
+      },
+      "real_published_package_typecheck": "GITHUB_CI_REQUIRED",
+      "typescript_offline_strict": "PASS"
+    },
+    "differential_comparisons": 1097,
+    "full_profile_example": "PASS",
+    "multi_seed": [
+      {
+        "differential_cases": 1097,
+        "differential_failed": 0,
+        "elapsed_seconds": 1.24251,
+        "fuzz_cases": 100000,
+        "fuzz_failed": 0,
+        "seed": 1
+      },
+      {
+        "differential_cases": 1097,
+        "differential_failed": 0,
+        "elapsed_seconds": 1.233622,
+        "fuzz_cases": 100000,
+        "fuzz_failed": 0,
+        "seed": 17
+      },
+      {
+        "differential_cases": 1097,
+        "differential_failed": 0,
+        "elapsed_seconds": 1.294516,
+        "fuzz_cases": 100000,
+        "fuzz_failed": 0,
+        "seed": 603
+      },
+      {
+        "differential_cases": 1097,
+        "differential_failed": 0,
+        "elapsed_seconds": 1.269955,
+        "fuzz_cases": 100000,
+        "fuzz_failed": 0,
+        "seed": 20260905
+      },
+      {
+        "differential_cases": 1097,
+        "differential_failed": 0,
+        "elapsed_seconds": 1.256472,
+        "fuzz_cases": 100000,
+        "fuzz_failed": 0,
+        "seed": 2147483647
+      }
+    ],
+    "ownership_primitives": 48,
+    "persistence_fuzz_cases": 1200,
+    "pytest": {
+      "failed": 0,
+      "passed": 250,
+      "seconds": 33.66
+    },
+    "reference_formal_property_families": 16,
+    "release_gate": {
+      "check_count": 27,
+      "failed_checks": [],
+      "implementation_ready": true
+    },
+    "sqlite": {
+      "foreign_key_errors": 0,
+      "integrity_check": "ok",
+      "journal_mode": "wal",
+      "synchronous": 2
+    },
+    "state_model_fuzz_cases": 100000,
+    "static_danger_scan": {
+      "eval_exec_pickle_shell_true_os_system_hits": 0
+    },
+    "unittest": {
+      "failed": 0,
+      "passed": 250,
+      "seconds": 33.023
+    },
+    "v061_seam_calculus": {
+      "cases": 80553,
+      "failures": 0,
+      "families": 36
+    },
+    "v062_continuity_recovery_erasure_calculus": {
+      "cases": 135880,
+      "failures": 0,
+      "families": 24
+    },
+    "v063_use_time_causal_cut_calculus": {
+      "cases": 131701,
+      "failures": 0,
+      "families": 34
+    },
+    "wheel_zip_integrity": "PASS"
+  },
+  "wheel": {
+    "bytes": 149781,
+    "path": "dist/nolane_memory-0.6.3rc3-py3-none-any.whl",
+    "sha256": "94c0a17b09ba5eb4a5a0bbc2639c4ddb15938eb68072d0f3ac6e62517bd9b801"
+  }
+}

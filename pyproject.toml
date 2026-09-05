@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nolane-memory"
+version = "0.6.3rc3"
+description = "Full-spec executable research runtime for Nolane Memory v0.6.3 K0-K5 + Semantic OCC"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+nolane-memory = "nolane_memory.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

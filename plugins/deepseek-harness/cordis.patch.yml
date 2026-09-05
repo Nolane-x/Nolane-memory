@@ -1,0 +1,15 @@
+# Example standalone composition for the current DeepSeek Harness developer-preview API.
+# For an existing dsh profile, add only the nolane-memory row through your profile overlay.
+- name: '@deepseek-ai/dsh-system-prompt'
+- name: '@deepseek-ai/dsh-tools'
+- name: './src/index.ts'
+  config:
+    database: './nolane-memory.db'
+    domain: 'deepseek-harness'
+    principal: 'deepseek-agent'
+    pythonExecutable: 'python3'
+    autoCreateDomain: true
+    enableReleaseGate: false
+    defaultTokenBudget: 4096
+    defaultPageFaultBudget: 32
+    timeoutMs: 30000
