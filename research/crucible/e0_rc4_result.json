@@ -18,6 +18,18 @@
       "conclusion": "success"
     }
   },
+  "minimal_trace": [
+    "Recall B_old through a prior CONTACT frame and retain old@example.com in host/model context.",
+    "Compile the active ACTION frame from A only and prove the contact region and B_old representation are absent from its dependency manifest.",
+    "Invalidate B_old and create B_new=new@example.com without mutating A.",
+    "Validate that the active ACTION frame remains current under rc4 enumerated-dependency validation.",
+    "Construct the structured payload field to=old@example.com from the retained prior-context value.",
+    "Issue MemoryUseFence for the active ACTION frame, principal alice, sink tool:send, and the exact stale payload.",
+    "Consume that fence successfully with the exact payload.",
+    "Freshly recall CONTACT and observe new@example.com.",
+    "Compare payload.to with current CONTACT.email and mark the accepted consequence stale.",
+    "Do not manually inject B into the active frame/fence dependency set at any point."
+  ],
   "observed": {
     "e0_reproduced": true,
     "b_absent_from_active_manifest": true,
@@ -37,6 +49,18 @@
     "reason": "The direct rc4 runtime validates every dependency it enumerates, but this structured consequence retained a material premise from prior host/model context that was not represented in the active frame read-set. The existing fence therefore remained valid after that premise changed. This is executable evidence of a read-set completeness seam, not yet proof that SRSC/BGC is the uniquely correct treatment.",
     "classification_caveat": "Independent review must determine whether the trace is best classified as a kernel semantic gap or a violation of a stronger host obligation-completeness contract. The current runtime and DeepSeek bridge do not themselves prove that every materially used prior-context premise is enumerated at the consequence boundary."
   },
+  "independent_review": {
+    "status": "PENDING",
+    "request_path": "research/crucible/independent_review_request.md",
+    "allowed_classifications": [
+      "KERNEL_READ_SET_GAP",
+      "HOST_OBLIGATION_VIOLATION",
+      "TEST_INVALID",
+      "INCONCLUSIVE"
+    ],
+    "e1_allowed": false,
+    "same_reasoning_chain_counts_as_independent": false
+  },
   "confounds_removed": [
     "natural-language extraction",
     "embedding retrieval",
@@ -46,9 +70,8 @@
     "concurrent mutation of the active A representation"
   ],
   "next_gate": [
-    "minimize the reproduction trace",
     "obtain independent review of the host-contract-versus-kernel-gap classification",
-    "only then preregister E1 structured consequence-side grounding on the identical trace"
+    "only after G0 classification allows it, preregister E1 structured consequence-side grounding on the identical trace"
   ],
   "w5_verdict": "BLOCKED"
 }
