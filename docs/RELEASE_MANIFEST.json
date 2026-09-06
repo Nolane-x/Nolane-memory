@@ -18,7 +18,8 @@
       "docs/VERIFICATION.txt"
     ],
     "hashed_file_count": 103,
-    "sha256": "e38b904b77e9ee6b248db9995dd55e00d7e03b8c7d4cb18ff2d9f94bed5fb937"
+    "sha256": "e38b904b77e9ee6b248db9995dd55e00d7e03b8c7d4cb18ff2d9f94bed5fb937",
+    "scope": "Verified local rc3 artifact snapshot before GitHub portability and DeepSeek-workspace compatibility fixes; canonical published source identity is recorded in published_git."
   },
   "spec": {
     "implementation_complete": 302,
@@ -51,8 +52,10 @@
         "failed": 0,
         "passed": 10
       },
-      "real_published_package_typecheck": "GITHUB_CI_REQUIRED",
-      "typescript_offline_strict": "PASS"
+      "real_published_package_typecheck": "PASS",
+      "typescript_offline_strict": "PASS",
+      "github_ci_run_id": 33975464796,
+      "github_ci_job_id": 101331263747
     },
     "differential_comparisons": 1097,
     "full_profile_example": "PASS",
@@ -147,5 +150,20 @@
     "bytes": 149781,
     "path": "dist/nolane_memory-0.6.3rc3-py3-none-any.whl",
     "sha256": "94c0a17b09ba5eb4a5a0bbc2639c4ddb15938eb68072d0f3ac6e62517bd9b801"
+  },
+  "published_git": {
+    "repository": "Nolane-x/Nolane-memory",
+    "release_commit_sha": "101930501658bc587fc75a361df21c992932cf55",
+    "release_tree_sha": "e4137e0a455ec1fb202c21db6579f0efc9b98aae",
+    "verify_workflow_run_id": 33975464796,
+    "verify_conclusion": "success",
+    "jobs": {
+      "python_core_3_11": "PASS",
+      "python_core_3_12": "PASS",
+      "python_core_3_13": "PASS",
+      "release_contract": "PASS",
+      "deepseek_harness_plugin": "PASS"
+    },
+    "deepseek_harness_validation": "Checked out current deepseek-ai/deepseek-harness master, installed its workspace dependencies, injected the Nolane plugin, and passed typecheck:dsh-workspace."
   }
 }
