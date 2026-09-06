@@ -1,0 +1,35 @@
+{
+  "campaign_id": "NM-V07-W5-CRUCIBLE-2026-09-06",
+  "experiment_id": "E0_DIRECT_RC4_HIDDEN_DEPENDENCY_REPRODUCTION",
+  "repository": "Nolane-x/Nolane-memory",
+  "baseline_commit": "c8ab348cf430801adb705c53b680fc102270e475",
+  "baseline_release": "0.6.3rc4",
+  "baseline_branch_origin": "main",
+  "research_branch": "research/v063-crucible-e0-20260906",
+  "source_files": {
+    "src/nolane_memory/runtime.py": {
+      "blob_sha": "22fe76be73f6ef705b7c350d7ca8a2030d101c60"
+    },
+    "tests/test_v063_occ.py": {
+      "blob_sha": "f50f7879600e1b1fb2a9a0efea1d14823d073edb"
+    },
+    ".github/workflows/ci.yml": {
+      "blob_sha": "b7bd37651191f7132c608b471f0a174de05c50e4"
+    }
+  },
+  "research_inputs": {
+    "blueprint_sha256": "3d41d5382e1efc4b35287d3dbc744f0b37c0078d574a7487c54e48109c9359e1",
+    "lab_repro_bundle_sha256": "65e26ab1e6bfa6a2501791bc8dd63799a46d4fdb7b67c05e7e433578ccc07ebc"
+  },
+  "runtime_contract_under_test": [
+    "compile_recall builds frame dependencies from declared roles, selected representations and global governance generations",
+    "issue_use_fence validates frame dependencies and adds sink/tool/flow-policy dependencies",
+    "consume_use_fence revalidates those dependencies and binds the exact payload digest",
+    "the experiment does not manually add the hidden B dependency"
+  ],
+  "non_claims": [
+    "This snapshot does not claim external replication.",
+    "This snapshot does not claim production prevalence.",
+    "This snapshot does not modify rc4 production code."
+  ]
+}
