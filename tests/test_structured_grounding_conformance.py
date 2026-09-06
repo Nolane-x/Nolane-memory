@@ -6,6 +6,7 @@ from nolane_memory import GroundingCompleteness, MemoryRuntime
 from nolane_memory.errors import (
     ActionArgumentMismatch,
     MemoryDependencyStale,
+    MemoryFlowBlocked,
     MemoryGroundingIncomplete,
     MemoryIntegrityError,
 )
@@ -254,6 +255,37 @@ class StructuredGroundingConformanceTests(unittest.TestCase):
                 sink="tool:send",
                 payload={"to": "old@example.com", "body": "status"},
                 consequence_groundings=[forged],
+                required_grounding_paths={"/to"},
+            )
+
+    def test_grounded_source_participates_in_composed_information_flow(self):
+        # Give the principal ordinary tool disclosure capability so the source is blocked
+        # only by the representation-set flow policy below. The active action frame does
+        # not contain recipient representation B; the grounding must nevertheless carry
+        # B into the composed flow proof before a fence can be minted.
+        self.rt.set_access_profile(
+            "d",
+            "alice",
+            {"DISCOVER", "USE_FOR_LOCAL_REASONING", "DERIVE", "DISCLOSE_TO_TOOL"},
+            sink_capabilities={"tool:send": ["DISCLOSE_TO_TOOL"]},
+        )
+        earlier_b = self._earlier_recipient_frame()
+        grounding = self._ground_recipient(earlier_b)
+        current_a = self._current_action_frame()
+        self.rt.register_flow_policy(
+            "d",
+            "recipient-secret",
+            sink="tool:send",
+            forbidden_representation_sets=[{self.rep_b_old}],
+        )
+
+        with self.assertRaises(MemoryFlowBlocked):
+            self.rt.issue_use_fence(
+                current_a,
+                principal="alice",
+                sink="tool:send",
+                payload={"to": "old@example.com", "body": "status"},
+                consequence_groundings=[grounding],
                 required_grounding_paths={"/to"},
             )
 
