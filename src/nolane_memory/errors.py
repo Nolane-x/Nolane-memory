@@ -41,5 +41,6 @@ class MemoryCounterexampleUnresolved(MemoryErrorBase): pass
 class MemoryAccessCapabilityDenied(MemoryErrorBase): pass
 class MemoryFlowPolicyCurrentnessUnknown(MemoryDependencyStale): pass
 class MemoryUseValidationUnavailable(MemoryErrorBase): pass
+class MemoryGroundingIncomplete(MemoryErrorBase): pass
 
 class MemoryProposalStale(MemoryErrorBase): pass
