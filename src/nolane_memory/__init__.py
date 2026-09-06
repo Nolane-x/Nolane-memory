@@ -1,4 +1,4 @@
-from .runtime import MemoryRuntime
+from .grounding import ConsequenceAtomGrounding, GroundingCompleteness, MemoryRuntime
 from .types import (
     AccessProfileRevision, ActivationGuardReceipt, Answerability, CommitReceipt, ConnectorQueryReceipt, ContinuityPin, CounterexampleApplicabilityRevision, DebtOutcome, DeclassificationReceipt, Dependency,
     EffectEvidence, EffectTier, EvidenceIndependenceReceipt, ExtractionProposal, ExtractionVerificationReceipt, FlowDecision, FrameFragment, FrameInformationFlowReceipt, FullSpecReleaseGateReport, HandoffPacket, MemoryExposureReceipt, MemoryQueryDomainRevision, NoTwoWritableClocksAudit,
@@ -10,7 +10,7 @@ from .types import (
 )
 
 __all__ = [
-    "MemoryRuntime", "Answerability", "LossState", "Recoverability", "CommitReceipt", "Dependency", "FrameFragment", "RecallRole", "RecallBoundaryDescriptor", "RecallObligation", "RecallFrame",
+    "MemoryRuntime", "ConsequenceAtomGrounding", "GroundingCompleteness", "Answerability", "LossState", "Recoverability", "CommitReceipt", "Dependency", "FrameFragment", "RecallRole", "RecallBoundaryDescriptor", "RecallObligation", "RecallFrame",
     "RecallCut", "RegionDiscoveryResult", "RepresentationResolution", "RecallReconstruction", "RecallSufficiencyAssessment", "RecallFrameDependencyManifestRevision", "MemoryUseFence", "MemoryAuthorityDomainRevision", "MemoryWriterFenceRevision", "MemoryWriteIntentRevision", "OriginBindingReceipt", "ConnectorQueryReceipt", "MemoryQueryDomainRevision", "PreservationCertificate", "EvidenceIndependenceReceipt", "SupportBundleReceipt", "RecoverabilityCertificate", "TemporalCoverageReceipt", "AccessProfileRevision", "RegimeRevision", "SelfVersionProfileRevision", "CounterexampleApplicabilityRevision", "ReplayForensicAssessment", "NoTwoWritableClocksAudit", "FullSpecReleaseGateReport", "DebtOutcome", "EffectTier", "FlowDecision", "RecoveryLayerStatus",
     "RepairCause", "SemanticDebt", "QueryCounterexample", "RepairReceipt", "RetentionDecision",
     "MaintenanceReceipt", "ProbeCheckpoint", "DeclassificationReceipt", "FrameInformationFlowReceipt",
