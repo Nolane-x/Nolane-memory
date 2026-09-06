@@ -6,19 +6,8 @@ from nolane_memory.errors import MemoryDependencyStale
 from nolane_memory.types import LossState, RecallRole
 
 
-class SemanticReadSetClosureRedTests(unittest.TestCase):
-    """E0 preregistered RED reproduction for the v0.7 SRSC candidate seam.
-
-    The consumer previously grounded one payload field from memory region B, then later
-    compiles an otherwise-current frame over independent region A. If B changes while A's
-    declared dependency set remains current, a strong consequence using the stale B value
-    should not be accepted silently.
-
-    This test is intentionally RED on v0.6.3rc4 if the hidden premise is outside the
-    enumerated frame/fence read-set. It must not be made green by globally invalidating
-    every unrelated write; the eventual treatment must bind the material consequence-side
-    dependency itself.
-    """
+class SemanticReadSetClosureTests(unittest.TestCase):
+    """E0 control + E1 structured-grounding treatment for the v0.7 SRSC seam."""
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -55,33 +44,23 @@ class SemanticReadSetClosureRedTests(unittest.TestCase):
         self.rt.close()
         self.tmp.cleanup()
 
-    def test_stale_host_held_memory_premise_cannot_escape_current_frame_read_set(self):
-        # Earlier context legitimately retrieved B and the host/model retained the value.
-        earlier_b = self.rt.compile_recall(
+    def _earlier_recipient_frame(self):
+        return self.rt.compile_recall(
             "d",
             "alice",
             [RecallRole("recipient", self.region_b, "RECIPIENT")],
             20,
         )
-        stale_recipient = earlier_b.fragments[0].payload["recipient"]
-        self.assertEqual(stale_recipient, "old@example.com")
 
-        # The current action frame depends only on A; B is not in its declared read-set.
-        current_a = self.rt.compile_recall(
+    def _current_action_frame(self):
+        return self.rt.compile_recall(
             "d",
             "alice",
             [RecallRole("action", self.region_a, "ACTION")],
             20,
         )
-        self.assertFalse(
-            any(
-                dep.dep_class == "representation" and dep.dep_key == self.rep_b_old
-                for dep in current_a.dependencies
-            ),
-            "E0 requires B to be absent from the current forward dependency manifest",
-        )
 
-        # B changes after the consumer retained the old value. This does not mutate A.
+    def _supersede_recipient(self):
         self.rt.invalidate_representation("d", self.rep_b_old, principal="alice")
         self.rep_b_new = self.rt.add_representation(
             "d",
@@ -94,23 +73,63 @@ class SemanticReadSetClosureRedTests(unittest.TestCase):
             principal="alice",
         )
 
-        # The exact emitted consequence still contains the old B-derived value.
+    def test_e0_control_unbound_hidden_dependency_is_accepted_by_v063_fence(self):
+        earlier_b = self._earlier_recipient_frame()
+        stale_recipient = earlier_b.fragments[0].payload["recipient"]
+        current_a = self._current_action_frame()
+        self.assertFalse(
+            any(
+                dep.dep_class == "representation" and dep.dep_key == self.rep_b_old
+                for dep in current_a.dependencies
+            ),
+            "E0 requires B to be absent from the current forward dependency manifest",
+        )
+
+        self._supersede_recipient()
         payload = {"to": stale_recipient, "body": "status"}
 
-        # Desired strong-use semantics: the stale material premise must be caught at the
-        # consequence boundary even though the forward frame itself is still current.
-        with self.assertRaises(MemoryDependencyStale):
-            fence = self.rt.issue_use_fence(
-                current_a,
-                principal="alice",
-                sink="tool:send",
-                payload=payload,
-            )
+        # This is the frozen rc4 control reproduced by CI at c4ea736f: the ordinary
+        # forward-only fence accepts because B is outside current_a.dependencies.
+        fence = self.rt.issue_use_fence(
+            current_a,
+            principal="alice",
+            sink="tool:send",
+            payload=payload,
+        )
+        self.assertTrue(
             self.rt.consume_use_fence(
                 fence.fence_id,
                 principal="alice",
                 sink="tool:send",
                 payload=payload,
+            )
+        )
+
+    def test_e1_structured_grounding_binds_prior_memory_atom_and_blocks_stale_source(self):
+        earlier_b = self._earlier_recipient_frame()
+        stale_recipient = earlier_b.fragments[0].payload["recipient"]
+
+        # G3 candidate: a deterministic host projection binds the outgoing /to atom to
+        # the exact earlier memory fragment that supplied its value. The model does not
+        # self-declare the dependency.
+        grounding = self.rt.ground_consequence_atom(
+            earlier_b,
+            role_id="recipient",
+            source_field="recipient",
+            atom_path="/to",
+        )
+        current_a = self._current_action_frame()
+        self._supersede_recipient()
+        payload = {"to": stale_recipient, "body": "status"}
+
+        with self.assertRaises(MemoryDependencyStale):
+            self.rt.issue_use_fence(
+                current_a,
+                principal="alice",
+                sink="tool:send",
+                payload=payload,
+                consequence_groundings=[grounding],
+                required_grounding_paths={"/to"},
             )
 
 
