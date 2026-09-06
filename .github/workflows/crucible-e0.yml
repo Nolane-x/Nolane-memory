@@ -1,0 +1,25 @@
+name: crucible-e0-hidden-dependency
+
+on:
+  pull_request:
+    paths:
+      - 'tests/crucible/test_hidden_dependency_race.py'
+      - 'research/crucible/**'
+      - '.github/workflows/crucible-e0.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e0-direct-rc4-reproduction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e . pytest
+      - name: Run preregistered E0 only
+        run: python -m pytest -q tests/crucible/test_hidden_dependency_race.py -vv
