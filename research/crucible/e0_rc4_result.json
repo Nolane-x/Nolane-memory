@@ -1,0 +1,54 @@
+{
+  "campaign_id": "NM-V07-W5-CRUCIBLE-2026-09-06",
+  "experiment_id": "E0_DIRECT_RC4_HIDDEN_DEPENDENCY_REPRODUCTION",
+  "baseline": {
+    "repository": "Nolane-x/Nolane-memory",
+    "commit": "c8ab348cf430801adb705c53b680fc102270e475",
+    "release": "0.6.3rc4",
+    "production_runtime_modified": false
+  },
+  "research_head_tested": "2ca01fc832389ef78c2f3410a2b5656e26b0528d",
+  "github_actions": {
+    "workflow": "release-artifact-rc4",
+    "run_id": 34029743956,
+    "job_id": 101476972367,
+    "pytest_step": {
+      "name": "Run python -m pytest -q",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  },
+  "observed": {
+    "e0_reproduced": true,
+    "b_absent_from_active_manifest": true,
+    "b_mutated_after_active_frame_compile": true,
+    "active_frame_valid_after_b_mutation": true,
+    "fence_issued_for_payload_using_stale_b": true,
+    "fence_consumed_successfully": true,
+    "oracle_current_b": "new@example.com",
+    "payload_b": "old@example.com",
+    "oracle_marks_payload_stale": true,
+    "false_accept_hidden_stale_dependency": true
+  },
+  "interpretation": {
+    "h1_status": "SURVIVES_E0",
+    "h7_status": "WEAKENED_BY_EXECUTABLE_COUNTEREXAMPLE",
+    "semantic_revision_earned": false,
+    "reason": "The direct rc4 runtime validates every dependency it enumerates, but this structured consequence retained a material premise from prior host/model context that was not represented in the active frame read-set. The existing fence therefore remained valid after that premise changed. This is executable evidence of a read-set completeness seam, not yet proof that SRSC/BGC is the uniquely correct treatment.",
+    "classification_caveat": "Independent review must determine whether the trace is best classified as a kernel semantic gap or a violation of a stronger host obligation-completeness contract. The current runtime and DeepSeek bridge do not themselves prove that every materially used prior-context premise is enumerated at the consequence boundary."
+  },
+  "confounds_removed": [
+    "natural-language extraction",
+    "embedding retrieval",
+    "reranking",
+    "LLM reasoning quality",
+    "source ambiguity",
+    "concurrent mutation of the active A representation"
+  ],
+  "next_gate": [
+    "minimize the reproduction trace",
+    "obtain independent review of the host-contract-versus-kernel-gap classification",
+    "only then preregister E1 structured consequence-side grounding on the identical trace"
+  ],
+  "w5_verdict": "BLOCKED"
+}
