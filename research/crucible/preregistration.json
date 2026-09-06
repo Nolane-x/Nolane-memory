@@ -1,0 +1,45 @@
+{
+  "campaign_id": "NM-V07-W5-CRUCIBLE-2026-09-06",
+  "experiment_id": "E0_DIRECT_RC4_HIDDEN_DEPENDENCY_REPRODUCTION",
+  "frozen_at": "2026-09-06",
+  "baseline": {
+    "repository": "Nolane-x/Nolane-memory",
+    "commit": "c8ab348cf430801adb705c53b680fc102270e475",
+    "release": "0.6.3rc4",
+    "production_code_changes_allowed": false
+  },
+  "question": "Can an rc4 MemoryUseFence accept a structured consequence whose payload materially depends on stale memory B when B influenced the consumer through prior host/model context but is absent from the active frame dependency manifest?",
+  "setup": [
+    "Create exact action representation A and exact contact representation B.",
+    "Read B through a prior recall frame and retain the observed value in host/model context.",
+    "Compile the active consequence frame from A only and verify B is absent from its dependencies.",
+    "Invalidate/supersede B without mutating A or an active-frame dependency.",
+    "Issue and consume MemoryUseFence for a payload that uses the stale B value.",
+    "Compare the runtime accept/block decision with an oracle reading current B."
+  ],
+  "h1_prediction": "The rc4 fence false-accepts because B is not present in the semantic read-set that the fence revalidates.",
+  "h7_kill_h1_condition": "The unmodified rc4 contract prevents the construction or blocks every valid construction without manually adding B to the active dependency set.",
+  "primary_endpoint": "false_accept_hidden_stale_dependency",
+  "success_for_reproduction": {
+    "active_frame_valid_after_b_mutation": true,
+    "fence_accepts_stale_payload": true,
+    "oracle_marks_payload_stale": true,
+    "b_absent_from_active_manifest": true
+  },
+  "confound_controls": [
+    "No extractor is involved; memory is a gold structured store.",
+    "No retrieval model, embedding model, reranker, or LLM is involved.",
+    "No production runtime code is modified.",
+    "The action-frame representation A remains unchanged.",
+    "The stale field is structured and directly observable in the payload.",
+    "The mutation affects B only; unrelated-write tolerance is preserved as the baseline control."
+  ],
+  "interpretation_limits": [
+    "A reproduction demonstrates a missing-dependency closure seam, not universal natural-language dependency incompleteness.",
+    "It does not prove SRSC/BGC is the only or best treatment.",
+    "It does not establish production prevalence or empirical superiority.",
+    "If a stronger host contract can prove every material premise is already carried into the active frame, the result must be reclassified as a host-integration violation rather than a kernel semantic gap."
+  ],
+  "next_step_if_reproduced": "Minimize the trace, obtain an independent review, then preregister a structured consequence-side grounding treatment on the identical trace.",
+  "next_step_if_not_reproduced": "Reject or weaken H1 and do not create v0.7 SRSC semantics."
+}
