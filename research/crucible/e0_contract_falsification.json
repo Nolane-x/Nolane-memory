@@ -1,0 +1,52 @@
+{
+  "campaign_id": "NM-V07-W5-CRUCIBLE-2026-09-06",
+  "experiment": "E0_DIRECT_RC4_HIDDEN_DEPENDENCY_REPRODUCTION",
+  "baseline_commit": "c8ab348cf430801adb705c53b680fc102270e475",
+  "classification": "HOST_OBLIGATION_VIOLATION",
+  "confidence": "HIGH",
+  "review_kind": "FRESH_SOURCE_AND_TEST_FALSIFICATION_PASS",
+  "external_independent_replication": false,
+  "e1_allowed": false,
+  "falsification_attempts": [
+    "Inspected exact rc4 low-level recall and use-fence dependency construction.",
+    "Searched the pre-existing rc4 specification for consequence-bound host obligations.",
+    "Inspected compile_boundary_recall hard-role construction and fixed-point closure.",
+    "Inspected the pre-existing recipient action-boundary regression test.",
+    "Inspected the DeepSeek bridge as a possible counterexample to the host contract."
+  ],
+  "decisive_evidence": [
+    {
+      "path": "docs/NOLANE-MEMORY-V0.6.3-SPEC.md",
+      "symbol_or_section": "section 43 / RecallBoundaryDescriptor",
+      "finding": "Before retrieval, the host/runtime constructs a bounded decision/action descriptor; omitted recipient and tool-parameter requirements are a motivating case."
+    },
+    {
+      "path": "src/nolane_memory/runtime.py",
+      "symbol_or_section": "MemoryRuntime.compile_boundary_recall",
+      "finding": "action_tool_roles are included in hard_sources, forced hard, and selected-representation hard dependencies are closed to a bounded fixed point."
+    },
+    {
+      "path": "tests/test_boundary_and_verification.py",
+      "symbol_or_section": "test_action_boundary_roles_are_hard_even_without_explicit_query",
+      "finding": "The existing rc4 regression specifically forces a recipient action-tool role hard even when it is not an explicit query role."
+    },
+    {
+      "path": "docs/CONFORMANCE.md",
+      "symbol_or_section": "Recall boundary fixed point / hard-role conservation",
+      "finding": "The action-boundary contract is listed as executable support rather than narrative-only guidance."
+    }
+  ],
+  "reason": "The original E0 active consequence frame is compiled with low-level compile_recall(A only) while payload.to materially reuses B from prior context. For the direct recipient/tool-parameter case, this bypasses an existing rc4 consequence-bound obligation that is implemented and regression-tested. Therefore the original trace does not discriminate a new SRSC semantic contract from nonconformant host construction.",
+  "non_claims": [
+    "This does not prove universal dependency completeness.",
+    "This does not close W5.",
+    "This is not external independent replication.",
+    "This does not reject SRSC/BGC; it rejects the original E0 trace as its authorization gate."
+  ],
+  "next_experiment": {
+    "id": "E0_V2_HIDDEN_TRANSFORM_DEPENDENCY_RACE",
+    "test_path": "tests/crucible/test_hidden_transform_dependency_race.py",
+    "required_property": "Use compile_boundary_recall with direct action/tool inputs bound as hard roles, then demonstrate a materially stale structured consequence only if an unenumerated transform input remains outside the active read-set.",
+    "status": "AWAITING_FRESH_CI_AND_CONTRACT_FALSIFICATION"
+  }
+}
