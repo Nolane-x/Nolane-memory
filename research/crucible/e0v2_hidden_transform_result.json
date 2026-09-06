@@ -1,0 +1,33 @@
+{
+  "campaign_id": "NM-V07-W5-CRUCIBLE-2026-09-06",
+  "experiment": "E0_V2_HIDDEN_TRANSFORM_DEPENDENCY_RACE",
+  "baseline_semantics": "Nolane Memory 0.6.3rc4",
+  "research_head": "8292120119f65d88cb7f683e8e85b6318d656ec8",
+  "test_path": "tests/crucible/test_hidden_transform_dependency_race.py",
+  "execution": {
+    "workflow": "release-artifact-rc4",
+    "run_id": 34031941736,
+    "job_id": 101482960446,
+    "step": "python -m pytest -q",
+    "conclusion": "success",
+    "observation": "The test asserts that a stale structured amount derived from a prior retained conversion-rate value is accepted after that rate is replaced, while the active frame was compiled through compile_boundary_recall with its direct action/tool roles hard-bound."
+  },
+  "contract_classification": "HOST_OBLIGATION_VIOLATION",
+  "classification_confidence": "HIGH",
+  "semantic_revision_earned": false,
+  "e1_allowed": false,
+  "reason": "Section 43 of the pre-existing v0.6.3 specification defines the hard Recall Obligation as including action/tool grounding dependencies, not only direct schema fields. The conversion rate materially grounds the emitted amount, so a conforming consequence boundary must carry it as a hard grounding dependency. E0-v2 therefore demonstrates that the runtime cannot independently prove a host-supplied boundary is complete; it does not demonstrate that rc4 semantics permit omission of the rate.",
+  "positive_result": "The trace exposes a practical enforcement surface: low-level/faulty hosts can violate the existing consequence-bound obligation and still receive a valid use fence because current rc4 does not machine-check semantic completeness of host-supplied action/tool grounding roles.",
+  "research_effect": {
+    "H1_SRSC_as_new_semantic_requirement": "WEAKENED",
+    "H7_no_semantic_v07_yet": "STRENGTHENED",
+    "structured_origin_binding_as_conformance_enforcement": "SUPPORTED_FOR_FURTHER_ENGINEERING"
+  },
+  "non_claims": [
+    "The successful pytest step does not prove external prevalence.",
+    "The trace does not close W5.",
+    "The trace does not prove universal dependency completeness or incompleteness.",
+    "The trace does not authorize merging the existing v0.7 SRSC feature branch as a new semantic contract."
+  ],
+  "next_action": "Reclassify the existing G3 structured consequence-origin prototype as opt-in enforcement of the existing action/tool grounding contract, preserve MemoryUseFence as the sole use-time owner, and evaluate it with conformance-specific negative controls before any semantic-version claim."
+}
