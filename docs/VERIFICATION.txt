@@ -10,7 +10,7 @@ Fresh source verification
 - CLI init/ownership: PASS; ownership 48/48
 - DeepSeek Harness bridge/contract tests: 10 passed, 0 failed
 - DeepSeek Harness offline strict TypeScript contract: PASS
-- DeepSeek published-package typecheck: delegated to GitHub CI after publication (not self-certified locally)
+- DeepSeek published-package/workspace typecheck: PASS in GitHub CI run 33975464796 against current deepseek-ai/deepseek-harness master
 
 Spec traceability
 - numbered sections: 402/402 contiguous
@@ -48,8 +48,21 @@ Packaging
 - wheel bytes: 149781
 - wheel clean-install smoke: PASS
 - wheel zip integrity: PASS
-- source-tree digest (declared exclusions): e38b904b77e9ee6b248db9995dd55e00d7e03b8c7d4cb18ff2d9f94bed5fb937
-- hashed source files: 103
+- local pre-publication source-tree digest (declared exclusions): e38b904b77e9ee6b248db9995dd55e00d7e03b8c7d4cb18ff2d9f94bed5fb937
+- local pre-publication hashed source files: 103
+- canonical published release commit: 101930501658bc587fc75a361df21c992932cf55
+- canonical published release tree: e4137e0a455ec1fb202c21db6579f0efc9b98aae
 
 Boundary
 research_complete remains false because the specification reserves external empirical/replication obligations for external evidence. DeepSeek Harness compatibility against the real published developer-preview packages is verified by repository CI after publication, not by this local offline artifact.
+
+Post-publication GitHub verification
+- verify workflow run: 33975464796 — SUCCESS
+- python-core 3.11: PASS
+- python-core 3.12: PASS
+- python-core 3.13: PASS
+- release-contract (including 100000 fuzz / 1024 differential / 1200 persistence gate): PASS
+- DeepSeek Harness plugin bridge/contract tests: PASS
+- DeepSeek Harness current-master workspace dependency install: PASS
+- DeepSeek Harness typecheck:dsh-workspace: PASS
+- bootstrap transport workflow is no longer required after source materialization and is removed by the cleanup change.
