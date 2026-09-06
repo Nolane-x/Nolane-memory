@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nolane-memory"
-version = "0.6.3rc3"
+version = "0.6.3rc4"
 description = "Full-spec executable research runtime for Nolane Memory v0.6.3 K0-K5 + Semantic OCC"
 requires-python = ">=3.11"
 dependencies = []
